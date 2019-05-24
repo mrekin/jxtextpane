@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
+import org.irsn.javax.swing.DefaultSyntaxColorizer;
 import org.irsn.javax.swing.DefaultSyntaxColorizer.RegExpHashMap;
 import javax.swing.text.BadLocationException;
 
@@ -75,6 +76,7 @@ public class CodeEditTest {
 
         edit.setKeywordHelp(help);
 
+
         JButton button = new JButton("Load ...");
         button.addActionListener(new ActionListener() {
 
@@ -97,6 +99,7 @@ public class CodeEditTest {
         edit.setText(".654654654\n0.65465465\nzdzertert.6544654\n654654.zefzer\n 32132.654\n1E10\n-6546.645\n+dffds\n-sdfsdf\n-65465sdfgdfg\n-654654 sdfgsdfg\n654654-654654\n\n" + read("src/main/java/org/irsn/javax/swing/JXTextPane.java"));
 
         edit.setVerticalLineAtPos(80);
+        ((DefaultSyntaxColorizer)edit.syntaxDocumentFilter).setQuoteColor(Color.DARK_GRAY);
 
         JFrame frame = new JFrame("Code editor");
         frame.getContentPane().add(edit.getContainerWithLines());

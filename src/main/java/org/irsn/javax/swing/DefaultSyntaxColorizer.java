@@ -600,4 +600,21 @@ public class DefaultSyntaxColorizer extends SyntaxColorizer {
     
     return "{\n" + whiteSpace.toString() + "\t\n" + whiteSpace.toString() + "}";
     }*/
+
+    public void setQuoteColor(Color c){
+        StyleConstants.setForeground(quote, c);
+    }
+
+    public void setNormalColor(Color c){
+        StyleConstants.setForeground(normal, c);
+    }
+    public void setCommentColor(Color c){
+        StyleConstants.setForeground(comment, c);
+    }
+    public void setOperatorColor(Color c){
+        StyleConstants.setForeground(operator, c);
+    }
+    public void setNumbersColor(Color c){
+        StyleConstants.setForeground(numbers, c);
+    }
 }

@@ -8,13 +8,13 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.github.yannrichet</groupId>
+	<groupId>com.github.mrekin</groupId>
 	<artifactId>JXTextPane</artifactId>
-	<version>1.0.5</version>
+	<version>1.0.6</version>
 	<packaging>bundle</packaging>
 	<name>jxtextpane</name>
-
-	<url>https://github.com/yannrichet/jxtextpane</url>
+	<!-- Fork from original yannrichet repository-->
+	<url>https://github.com/mrekin/jxtextpane</url>
 
 	<properties>
 	</properties>
@@ -164,9 +164,9 @@
 	</build>
 
 	<scm>
-		<connection>scm:git:git@github.com:yannrichet/jxtextpane.git</connection>
-		<developerConnection>scm:git:git@github.com:yannrichet/jxtextpane.git</developerConnection>
-		<url>git@github.com:yannrichet/jxtextpane.git</url>
+		<connection>scm:git:git@github.com:mrekin/jxtextpane.git</connection>
+		<developerConnection>scm:git:git@github.com:mrekin/jxtextpane.git</developerConnection>
+		<url>git@github.com:mrekin/jxtextpane.git</url>
 	</scm>
 
 	<distributionManagement>
