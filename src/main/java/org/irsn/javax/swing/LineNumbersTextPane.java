@@ -68,6 +68,7 @@ public class LineNumbersTextPane extends JXTextPane {
                 updateLineNumberView();
             }
         });
+        jScrollPane1.setVisible(true);
 
         jSplitPane1 = new JSplitPane();
 
@@ -133,16 +134,25 @@ public class LineNumbersTextPane extends JXTextPane {
     public void updateLineNumberView() {
         // We need to properly convert the points to match the viewport
         // Read docs for viewport
-        viewStart = viewToModel(jScrollPane1.getViewport().getViewPosition());
+ /*       viewStart = viewToModel(jScrollPane1.getViewport().getViewPosition());
         // starting pos  in document
         viewEnd = viewToModel(new Point(jScrollPane1.getViewport().getViewPosition().x,
                 jScrollPane1.getViewport().getViewPosition().y + jScrollPane1.getViewport().getExtentSize().height));
         // end pos in doc
-        if (!isDisplayLineNumbers()) {
+   */  if (!isDisplayLineNumbers()) {
             return;
         }
+        updateViewStartEnd();
         linenumbers.repaint();
         //System.err.println("updateLineNumberView");
+    }
+
+    private void updateViewStartEnd(){
+        viewStart = viewToModel(jScrollPane1.getViewport().getViewPosition());
+        // starting pos  in document
+        viewEnd = viewToModel(new Point(jScrollPane1.getViewport().getViewPosition().x,
+                jScrollPane1.getViewport().getViewPosition().y + jScrollPane1.getViewport().getExtentSize().height));
+
     }
 
     public Container getContainerWithLines() {
@@ -202,6 +212,9 @@ public class LineNumbersTextPane extends JXTextPane {
                 return;
             }
 
+            //TEMP
+            updateViewStartEnd();
+
             // translate offsets to lines
             Document doc = _editor.getDocument();
             int startline = doc.getDefaultRootElement().getElementIndex(viewStart) + 1;
@@ -216,8 +229,9 @@ public class LineNumbersTextPane extends JXTextPane {
             try {
                 starting_y = _editor.modelToView(viewStart).y - jScrollPane1.getViewport().getViewPosition().y + fontHeight - fontDesc;
             } catch (BadLocationException e1) {
-                //e1.printStackTrace();
+                e1.printStackTrace();
             } catch (NullPointerException e) {
+                e.printStackTrace();
             }
 
             for (int line = startline, y = starting_y; line <= endline; y += fontHeight, line++) {
