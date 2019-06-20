@@ -382,6 +382,8 @@ public class CodeEditorPane extends LineNumbersTextPane {
             }
         });
 
+        addMouseMotionListener(new TokenLinkHandler(this));
+
         addKeyListener(keyAdapter);
         
         addCaretListener(new CodeHighlighter());
@@ -401,7 +403,7 @@ public class CodeEditorPane extends LineNumbersTextPane {
         }
     }
 
-    private StringBuilder getLastToken(String str){
+    private String getLastToken(String str){
         StringBuilder base = new StringBuilder();
         int i = 1;
         if (str.length() > 0) {
@@ -418,8 +420,47 @@ public class CodeEditorPane extends LineNumbersTextPane {
             }
         }
 
-        return base;
+        return base.toString();
     }
+
+    public static int getWordStart(JTextComponent comp, int offset){
+        String str = comp.getText().substring(0,offset);
+        int i = 1;
+        if (str.length() > 0) {
+            char c;
+            c = str.charAt(str.length() - i);
+
+            while (SyntaxColorizer.ALL_OPERANDS.indexOf(c)==-1 || Character.isWhitespace(c)) {
+                i++;
+                if (((offset - i) >= 0)) {
+                    c = str.charAt(str.length() - i);
+                } else {
+                    break;
+                }
+            }
+        }
+        return offset - i + 1;
+    }
+
+    public static int getWordEnd(JTextComponent comp, int offset){
+        String str = comp.getText().substring(offset);
+        int i = 1;
+        if (str.length() > 0) {
+            char c;
+            c = str.charAt(i);
+
+            while (SyntaxColorizer.ALL_OPERANDS.indexOf(c)==-1 || Character.isWhitespace(c)) {
+                i++;
+                if (i <= str.length()) {
+                    c = str.charAt(i);
+                } else {
+                    break;
+                }
+            }
+        }
+        return offset + i;
+    }
+
 
     /** Method to override for more flexible (and clever:) completion strategy.
     This impl. is just default: suggest complete word with matching begining.*/
@@ -428,11 +469,11 @@ public class CodeEditorPane extends LineNumbersTextPane {
             return null;
         }
 
-        StringBuilder base = getLastToken(beforeCaret);
+        String base = getLastToken(beforeCaret);
         int i = base.length()+1;
         LinkedList<KeyWordItem> newitems = new LinkedList<KeyWordItem>();
         for (String k : help.keySet()) {
-            if (k.startsWith(base.toString())) {
+            if (k.startsWith(base)) {
                 newitems.add(new KeyWordItem(k, help, completionMenu, i));
             }
         }
