@@ -48,7 +48,15 @@ public class CodeEditTest {
 
         edit.setKeywordColor(syntax);
 
+        HashMap<String, String> repl = new HashMap<String, String>();
+        repl.put("sout","System.out.println(\"%c\");");
+        repl.put("soutf","System.out.printf(\"%c\");");
+
+        edit.setKeywordReplacer(repl);
+
         HashMap<String, String> help = new HashMap<String, String>();
+        help.putAll(repl);
+
         help.put("boolea", "???");
         help.put("booleeeaaa", "???");
         help.put("booleeeaaannn", "");
@@ -99,7 +107,7 @@ public class CodeEditTest {
         edit.setText(".654654654\n0.65465465\nzdzertert.6544654\n654654.zefzer\n 32132.654\n1E10\n-6546.645\n+dffds\n-sdfsdf\n-65465sdfgdfg\n-654654 sdfgsdfg\n654654-654654\n\n" + read("src/main/java/org/irsn/javax/swing/JXTextPane.java"));
 
         edit.setVerticalLineAtPos(80);
-        ((DefaultSyntaxColorizer)edit.syntaxDocumentFilter).setQuoteColor(Color.DARK_GRAY);
+        ((DefaultSyntaxColorizer)edit.syntaxDocumentFilter).setQuoteColor(Color.magenta);
 
         JFrame frame = new JFrame("Code editor");
         frame.getContentPane().add(edit.getContainerWithLines());

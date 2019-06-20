@@ -99,6 +99,8 @@ public class CodeEditorPane extends LineNumbersTextPane {
     protected Color caret_line_color = new Color(0.0f, 0.0f, 1.0f, 0.1f);
     protected Color caret_brace_color = new Color(1.0f, 0.0f, 0.0f, 0.2f);
     protected HashMap<String, String> help;
+    protected HashMap<String, String> replacer;
+    private String replacer_caret_marker = "%c";
     protected JPopupMenu completionMenu;
     public static int DEFAULT_FONT_SIZE = 10;
     KeyAdapter keyAdapter;
@@ -330,6 +332,23 @@ public class CodeEditorPane extends LineNumbersTextPane {
                     String txt = getText();
                     String before = txt.substring(0, getCaretPosition());
                     String after = txt.substring(getCaretPosition());
+
+                    if(replacer.containsKey(getLastToken(before).toString())){
+                        String targetValue = replacer.get(getLastToken(before).toString());
+                        try {
+                            //prepare target value and offset for caret
+                            int caret_offset = targetValue.length() - targetValue.indexOf(replacer_caret_marker) - replacer_caret_marker.length();
+                            targetValue = targetValue.replace(replacer_caret_marker,"");
+                            //removing token
+                            getDocument().remove(getCaretPosition() - getLastToken(before).length(), getLastToken(before).length());
+                            //inserting target value
+                            getDocument().insertString(getCaretPosition(), targetValue, null);
+                            setCaretPosition(getCaretPosition()-caret_offset);
+                            return;
+                        }catch (BadLocationException ble){
+
+                        }
+                    }
                     
                     LinkedList<KeyWordItem> visible_completion_keywords = buildCompletionMenu(before, after);
                     
@@ -369,28 +388,35 @@ public class CodeEditorPane extends LineNumbersTextPane {
         }
     }
 
+    private StringBuilder getLastToken(String str){
+        StringBuilder base = new StringBuilder();
+        int i = 1;
+        if (str.length() > 0) {
+            char c;
+            c = str.charAt(str.length() - i);
+            while (!syntaxDocumentFilter.isTokenSeparator(c)) {
+                base.insert(0, c);
+                i++;
+                if (((getCaretPosition() - i) >= 0)) {
+                    c = str.charAt(str.length() - i);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return base;
+    }
+
     /** Method to override for more flexible (and clever:) completion strategy.
     This impl. is just default: suggest complete word with matching begining.*/
     public LinkedList<KeyWordItem> buildCompletionMenu(String beforeCaret, String afterCaret) {
         if (help == null || help.isEmpty()) {
             return null;
         }
-        StringBuilder base = new StringBuilder();
-        int i = 1;
-        if (beforeCaret.length() > 0) {
-            char c;
-            c = beforeCaret.charAt(beforeCaret.length() - i);
-            while (!syntaxDocumentFilter.isTokenSeparator(c)) {
-                base.insert(0, c);
-                i++;
-                if (((getCaretPosition() - i) >= 0)) {
-                    c = beforeCaret.charAt(beforeCaret.length() - i);
-                } else {
-                    break;
-                }
-            }
-        }
-        
+
+        StringBuilder base = getLastToken(beforeCaret);
+        int i = base.length()+1;
         LinkedList<KeyWordItem> newitems = new LinkedList<KeyWordItem>();
         for (String k : help.keySet()) {
             if (k.startsWith(base.toString())) {
@@ -596,6 +622,15 @@ public class CodeEditorPane extends LineNumbersTextPane {
     public void setKeywordHelp(HashMap<String, String> keywords) {
         help = keywords;
     }
+
+    public void setKeywordReplacer(HashMap<String, String> keywords) {
+        replacer = keywords;
+    }
+
+    public void setReplacerCaretMarker(String marker) {
+        replacer_caret_marker = marker;
+    }
+
     
     @Override
     protected EditorKit createDefaultEditorKit() {

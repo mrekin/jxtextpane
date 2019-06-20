@@ -23,15 +23,30 @@ public class BraceCompletion extends DocumentFilter {
     @Override
     public void insertString(FilterBypass b, int offset, String str, AttributeSet a) throws BadLocationException {
         int caret_offset = 0;
+        int caret_position = component.getCaretPosition();
+        String prev_next_chars = null;
+        // Maybe not the best solution
+        if(caret_position==0){
+            prev_next_chars = " "+component.getText(caret_position,1);
+        }else{
+            prev_next_chars = component.getText(caret_position-1 ,2);
+        }
+
         if (str.length() == 1 && braces != null) {//to avoid when str does not come from user: it crashes if 4096 buffer starts with a '('
             for (char[] cs : braces) {
-                if (str.charAt(0) == cs[0]) {
+                if (str.charAt(0) == cs[1] && prev_next_chars.charAt(0) == cs[0] && prev_next_chars.charAt(1) == cs[1]){
+                    str = "";
+                    caret_offset = 1;
+                    break;
+                }
+                if (str.charAt(0) == cs[0]){
                     str = "" + cs[0] + cs[1];
                     caret_offset = -1;
                     break;
                 }
             }
         }
+
 
         b.insertString(offset, str, a);
 
