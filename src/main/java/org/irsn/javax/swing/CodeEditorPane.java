@@ -5,9 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -369,6 +367,21 @@ public class CodeEditorPane extends LineNumbersTextPane {
                 }
             }
         };
+
+        addMouseWheelListener(new MouseAdapter() {
+
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                if (e.isControlDown()) {
+                    if (e.getWheelRotation() > 0) {
+                        completionMenu.setFont(getFont().deriveFont(getFont().getSize2D() - 1.0f));
+                    } else {
+                        completionMenu.setFont(getFont().deriveFont(getFont().getSize2D() + 1.0f));
+                    }
+                }
+            }
+        });
+
         addKeyListener(keyAdapter);
         
         addCaretListener(new CodeHighlighter());
