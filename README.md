@@ -14,7 +14,7 @@ These background components are integrated in following Swing components (extend
 
 * JXTextPane (extends JXEditorPane from SwingX) providing undo/redo, search, font zoom (Ctrl+Mouse wheel),
 * LineNumbersTextPane (extends JXTextPane) providing line numbers,
-* CodeEditorPane (extends LineNumbersTextPane?) providing code completion (Ctrl+Space), code help, vertical line. 
+* CodeEditorPane (extends LineNumbersTextPane?) providing code completion (Ctrl+Space), code help, vertical line, token replacement. 
 
 Commercial compatible license.
 
@@ -42,10 +42,17 @@ public class Example {
         syntax.put("out", Color.GREEN);
         syntax.put("err", Color.RED);
         syntax.put("print(\\w{2})", Color.CYAN);
+        
+        ((DefaultSyntaxColorizer)edit.syntaxDocumentFilter).setQuoteColor(Color.ORANGE);
 
         final CodeEditorPane edit = new CodeEditorPane();
 
         edit.setKeywordColor(syntax);
+        
+        HashMap<String, String> repl = new HashMap<String, String>();
+        repl.put("sout","System.out.println(\"%c\");");
+        repl.put("soutf","System.out.printf(\"%c\");");
+        edit.setKeywordReplacer(repl);
 
         HashMap<String, String> help = new HashMap<String, String>();
         help.put("System", "The System class contains several useful class fields and methods. It cannot be instantiated.");
